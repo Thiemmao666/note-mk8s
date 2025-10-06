@@ -15,3 +15,30 @@ org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
         at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:286) ~[hibernate-core-6.4.2.Final.jar!/:6.4.2.Final]
         at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:145) ~[hibernate-core-6.4.2.Final.jar!/:6.4.2.Final]
         at java.base/java.util.HashMap.forEach(HashMap.java:1421) ~[na:na]
+
+
+
+
+        CommandLine flags: -XX:ConcGCThreads=3 -XX:G1MaxNewSizePercent=45 -XX:G1NewSizePercent=35 -XX:InitialHeapSize=12884901888 -XX:InitiatingHeapOccupancyPercent=40 -XX:MaxHeapSize=12884901888 -XX:ParallelGCThreads=10 -XX:+PrintGC -XX:+PrintGCTimeStamps -XX:+UnlockExperimentalVMOptions -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseG1GC -XX:+UseStringDeduplication 
+1.052: [GC pause (Metadata GC Threshold) (young) (initial-mark) 474M->7099K(12288M), 0.0128195 secs]
+1.065: [GC concurrent-root-region-scan-start]
+1.068: [GC concurrent-root-region-scan-end, 0.0028831 secs]
+1.068: [GC concurrent-mark-start]
+1.069: [GC concurrent-mark-end, 0.0011363 secs]
+1.069: [GC remark, 0.0038475 secs]
+1.073: [GC cleanup 11197K->11197K(12288M), 0.0018529 secs]
+3.119: [GC pause (Metadata GC Threshold) (young) (initial-mark) 926M->25216K(12288M), 0.0204408 secs]
+3.140: [GC concurrent-root-region-scan-start]
+3.146: [GC concurrent-root-region-scan-end, 0.0065351 secs]
+3.146: [GC concurrent-mark-start]
+3.148: [GC concurrent-mark-end, 0.0012691 secs]
+3.148: [GC remark, 0.0067253 secs]
+3.155: [GC cleanup 29312K->29312K(12288M), 0.0037199 secs]
+7.051: [GC pause (Metadata GC Threshold) (young) (initial-mark) 1548M->60668K(12288M), 0.0325005 secs]
+7.084: [GC concurrent-root-region-scan-start]
+7.092: [GC concurrent-string-deduplication, 1062.5K->708.5K(354.0K), avg 33.3%, 0.0045829 secs]
+7.105: [GC concurrent-root-region-scan-end, 0.0214446 secs]
+7.105: [GC concurrent-mark-start]
+7.106: [GC concurrent-mark-end, 0.0011171 secs]
+7.107: [GC remark, 0.0079830 secs]
+7.115: [GC cleanup 74977K->74977K(12288M), 0.0012118 secs]
