@@ -52,3 +52,11 @@ Events:
   Normal   SuccessfulAttachVolume  2m41s              attachdetach-controller  AttachVolume.Attach succeeded for volume "pvc-80a7da97-0e07-4404-b276-0d922525ce25"
   Warning  FailedMount             47s                kubelet                  MountVolume.MountDevice failed for volume "pvc-80a7da97-0e07-4404-b276-0d922525ce25" : rpc error: code = DeadlineExceeded desc = context deadline exceeded
   Warning  FailedMount             15s (x6 over 47s)  kubelet                  MountVolume.MountDevice failed for volume "pvc-80a7da97-0e07-4404-b276-0d922525ce25" : rpc error: code = Aborted desc = an operation with the given Volume ID 0001-0009-rook-ceph-0000000000000001-757926dd-7ff2-4d25-b6e4-284a549d4683 already exists
+
+
+  Events:
+  Type     Reason            Age                From               Message
+  ----     ------            ----               ----               -------
+  Warning  FailedScheduling  12m                default-scheduler  0/8 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 2 node(s) had untolerated taint {node-role.kubernetes.io/control-plane: }, 5 node(s) didn't match Pod's node affinity/selector. preemption: 0/8 nodes are available: 1 No preemption victims found for incoming pod, 7 Preemption is not helpful for scheduling.
+  Normal   Scheduled         12m                default-scheduler  Successfully assigned mcc-main/frontend-deployment-84b6756f5f-6mwlz to stg-workermain
+  Warning  FailedMount       19s (x7 over 12m)  kubelet            MountVolume.MountDevice failed for volume "pvc-d09c9250-815b-4d8e-930c-a635f5aa1c5b" : rpc error: code = Aborted desc = an operation with the given Volume ID 0001-0009-rook-ceph-0000000000000001-da80fba6-d89e-431c-827c-c79050e2ffa0 already exists
