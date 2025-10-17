@@ -42,3 +42,13 @@ org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
 7.106: [GC concurrent-mark-end, 0.0011171 secs]
 7.107: [GC remark, 0.0079830 secs]
 7.115: [GC cleanup 74977K->74977K(12288M), 0.0012118 secs]
+
+
+
+Events:
+  Type     Reason                  Age                From                     Message
+  ----     ------                  ----               ----                     -------
+  Normal   Scheduled               2m41s              default-scheduler        Successfully assigned mcc-main/frontend-deployment-84b6756f5f-rr6m6 to stg-workermain
+  Normal   SuccessfulAttachVolume  2m41s              attachdetach-controller  AttachVolume.Attach succeeded for volume "pvc-80a7da97-0e07-4404-b276-0d922525ce25"
+  Warning  FailedMount             47s                kubelet                  MountVolume.MountDevice failed for volume "pvc-80a7da97-0e07-4404-b276-0d922525ce25" : rpc error: code = DeadlineExceeded desc = context deadline exceeded
+  Warning  FailedMount             15s (x6 over 47s)  kubelet                  MountVolume.MountDevice failed for volume "pvc-80a7da97-0e07-4404-b276-0d922525ce25" : rpc error: code = Aborted desc = an operation with the given Volume ID 0001-0009-rook-ceph-0000000000000001-757926dd-7ff2-4d25-b6e4-284a549d4683 already exists
