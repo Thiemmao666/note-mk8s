@@ -67,3 +67,34 @@ Events:
 10.102.133.104:6789,10.102.20.85:6789,10.104.248.137:6789:/volumes/csi/csi-vol-e966068b-26c0-4dd9-acf5-b7489a604d00/e80e499e-44ef-4e11-983d-63a2d31f0511 on /var/lib/kubelet/pods/f4e121ad-7d8e-4abe-9597-37655ac7c44c/volumes/kubernetes.io~csi/pvc-2992565c-8de3-474a-b4ec-62b0fd6f9425/mount type ceph (rw,relatime,name=csi-cephfs-node,secret=<hidden>,fsid=00000000-0000-0000-0000-000000000000,acl,mds_namespace=mccfs,_netdev)
 10.102.133.104:6789,10.102.20.85:6789,10.104.248.137:6789:/volumes/csi/csi-vol-9b6bdb8f-d758-4ab3-9347-1d03c9faf0a6/d6156041-dbe8-401b-abde-06d6f93855a2 on /var/lib/kubelet/plugins/kubernetes.io/csi/rook-ceph.cephfs.csi.ceph.com/2c6dbed91ea4866558732e7b74044be3555756c74201350b4fc62d76ad2b96bd/globalmount type ceph (rw,relatime,name=csi-cephfs-node,secret=<hidden>,fsid=00000000-0000-0000-0000-000000000000,acl,mds_namespace=mccfs)
 10.102.133.104:6789,10.102.20.85:6789,10.104.248.137:6789:/volumes/csi/csi-vol-9b6bdb8f-d758-4ab3-9347-1d03c9faf0a6/d6156041-dbe8-401b-abde-06d6f93855a2 on /var/lib/kubelet/pods/4b0d96aa-12e5-4f14-8fbc-00cd9502884f/volumes/kubernetes.io~csi/pvc-aba26973-1045-49b9-9370-6e8c7a5c1be7/mount type ceph (rw,relatime,name=csi-cephfs-node,secret=<hidden>,fsid=00000000-0000-0000-0000-000000000000,acl,mds_namespace=mccfs,_netdev)
+
+
+scloud@stg-master02:~/devops-mcc/1.stg/1.moss-app/5.plan-service$ kd pv pvc-d09c9250-815b-4d8e-930c-a635f5aa1c5b
+Name:            pvc-d09c9250-815b-4d8e-930c-a635f5aa1c5b
+Labels:          <none>
+Annotations:     pv.kubernetes.io/provisioned-by: rook-ceph.cephfs.csi.ceph.com
+                 volume.kubernetes.io/provisioner-deletion-secret-name: rook-csi-cephfs-provisioner
+                 volume.kubernetes.io/provisioner-deletion-secret-namespace: rook-ceph
+Finalizers:      [kubernetes.io/pv-protection]
+StorageClass:    rook-cephfs
+Status:          Bound
+Claim:           mcc-main/frontend-pvc
+Reclaim Policy:  Retain
+Access Modes:    RWX
+VolumeMode:      Filesystem
+Capacity:        1Gi
+Node Affinity:   <none>
+Message:         
+Source:
+    Type:              CSI (a Container Storage Interface (CSI) volume source)
+    Driver:            rook-ceph.cephfs.csi.ceph.com
+    FSType:            
+    VolumeHandle:      0001-0009-rook-ceph-0000000000000001-da80fba6-d89e-431c-827c-c79050e2ffa0
+    ReadOnly:          false
+    VolumeAttributes:      clusterID=rook-ceph
+                           fsName=mccfs
+                           pool=mccfs-mccpool
+                           storage.kubernetes.io/csiProvisionerIdentity=1759724271822-1323-rook-ceph.cephfs.csi.ceph.com
+                           subvolumeName=csi-vol-da80fba6-d89e-431c-827c-c79050e2ffa0
+                           subvolumePath=/volumes/csi/csi-vol-da80fba6-d89e-431c-827c-c79050e2ffa0/cce565e5-615b-422c-aa4e-daa6414ec346
+Events:                <none>
