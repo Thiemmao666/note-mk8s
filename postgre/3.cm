@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres
+  namespace: mcc
+data:
+  POSTGRESQL_DATABASE: "mcc_master_data_db"
+  REPMGR_PRIMARY_HOST: "postgres-0.postgres-headless.mcc.svc.cluster.local"
+  REPMGR_PARTNER_NODES: "postgres-0.postgres-headless.mcc.svc.cluster.local,postgres-1.postgres-headless.mcc.svc.cluster.local"
+  POSTGRESQL_MAX_CONNECTIONS: "500"
