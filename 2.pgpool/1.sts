@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgpool
+  namespace: mcc
+  labels:
+    app: pgpool
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pgpool
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: pgpool
+    spec:
+      nodeSelector:
+        role: db
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - pgpool
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: pgpool
+          image: docker.io/library/mcc-pgpool:4.5.3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: time-zone
+              mountPath: /etc/localtime
+          envFrom:
+            - configMapRef:
+                name: pgpool
+            - secretRef:
+                name: pgpool
+          livenessProbe:
+            exec:
+              command:
+                - /opt/bitnami/scripts/pgpool/healthcheck.sh
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+      volumes:
+        - name: time-zone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Ho_Chi_Minh
