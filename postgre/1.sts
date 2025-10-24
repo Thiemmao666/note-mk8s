@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: mcc
+spec:
+  replicas: 2
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres-headless
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      nodeSelector:
+        role: db
+      containers:
+        - name: postgresql
+          image: docker.io/library/mcc-postgresql-repmgr:16.3.0
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: postgres
+            - secretRef:
+                name: postgres
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: REPMGR_NODE_NAME
+              value: "$(MY_POD_NAME)"
+            - name: REPMGR_NODE_NETWORK_NAME
+              value: "$(MY_POD_NAME).postgres-headless.mcc.svc.cluster.local"
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /bitnami/postgresql
+            - name: time-zone
+              mountPath: /etc/localtime
+      volumes:
+        - name: time-zone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Ho_Chi_Minh          
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: "100Gi"
