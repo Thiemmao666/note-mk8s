@@ -1,0 +1,44 @@
+JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.20.1.jar"
+ OTEL_EXPORTER_OTLP_ENDPOINT: http://grafana-tempo.monitoring-demo-2.svc.cluster.local:4318 // DNS of Tempo in k8s cluster to collect traces
+ OTEL_METRICS_EXPORTER: none
+ OTEL_LOGS_EXPORTER: none
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: config-server-deployment
+ labels:
+ app: mcc-config-server
+spec:
+ ...
+ template:
+ metadata:
+ labels:
+ app: mcc-config-server
+ spec:
+ containers:
+ - name: mcc-config-server
+ ...
+ env:
+ - name: JAVA_TOOL_OPTIONS
+ valueFrom: 
+ configMapKeyRef:
+ name: mcc-configmap
+ key: JAVA_TOOL_OPTIONS
+ - name: OTEL_EXPORTER_OTLP_ENDPOINT
+ valueFrom: 
+ configMapKeyRef:
+ name: mcc-configmap
+ key: OTEL_EXPORTER_OTLP_ENDPOINT
+ - name: OTEL_METRICS_EXPORTER
+ valueFrom: 
+ configMapKeyRef:
+ name: mcc-configmap
+ key: OTEL_METRICS_EXPORTER
+ - name: OTEL_LOGS_EXPORTER
+ valueFrom:
+ configMapKeyRef:
+ name: mcc-configmap
+ key: OTEL_LOGS_EXPORTER
+ - name: OTEL_SERVICE_NAME
+ value: mcc-config-server // service name
