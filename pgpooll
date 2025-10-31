@@ -1,0 +1,36 @@
+pgpool 18:02:50.51 INFO  ==> 
+pgpool 18:02:50.53 INFO  ==> ** Starting Pgpool-II setup **
+pgpool 18:02:50.58 INFO  ==> Validating settings in PGPOOL_* env vars...
+pgpool 18:02:50.62 INFO  ==> Initializing Pgpool-II...
+pgpool 18:02:50.63 INFO  ==> Generating pg_hba.conf file...
+pgpool 18:02:50.64 INFO  ==> Generating pgpool.conf file...
+pgpool 18:02:50.93 INFO  ==> Generating password file for local authentication...
+pgpool 18:02:50.97 INFO  ==> Generating password file for pgpool admin user...
+pgpool 18:02:50.99 INFO  ==> ** Pgpool-II setup finished! **
+
+pgpool 18:02:51.04 INFO  ==> ** Starting Pgpool-II **
+2025-10-31 18:02:51.065: main pid 1: LOG:  Backend status file /opt/bitnami/pgpool/logs/pgpool_status does not exist
+2025-10-31 18:02:51.065: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2025-10-31 18:02:51.065: main pid 1: LOG:  memory cache initialized
+2025-10-31 18:02:51.065: main pid 1: DETAIL:  memcache blocks :64
+2025-10-31 18:02:51.065: main pid 1: LOG:  allocating (136206832) bytes of shared memory segment
+2025-10-31 18:02:51.065: main pid 1: LOG:  allocating shared memory segment of size: 136206832 
+2025-10-31 18:02:51.189: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2025-10-31 18:02:51.189: main pid 1: LOG:  health_check_stats_shared_memory_size: requested size: 12288
+2025-10-31 18:02:51.189: main pid 1: LOG:  memory cache initialized
+2025-10-31 18:02:51.189: main pid 1: DETAIL:  memcache blocks :64
+2025-10-31 18:02:51.193: main pid 1: LOG:  pool_discard_oid_maps: discarded memqcache oid maps
+2025-10-31 18:02:51.213: main pid 1: LOG:  create socket files[0]: /opt/bitnami/pgpool/tmp/.s.PGSQL.5432
+2025-10-31 18:02:51.214: main pid 1: LOG:  listen address[0]: *
+2025-10-31 18:02:51.214: main pid 1: LOG:  Setting up socket for 0.0.0.0:5432
+2025-10-31 18:02:51.214: main pid 1: LOG:  Setting up socket for :::5432
+2025-10-31 18:02:51.234: main pid 1: LOG:  find_primary_node_repeatedly: waiting for finding a primary node
+2025-10-31 18:03:11.251: main pid 1: WARNING:  failed to connect to PostgreSQL server, getaddrinfo() failed with error "Temporary failure in name resolution"
+2025-10-31 18:03:11.251: main pid 1: LOG:  find_primary_node: make_persistent_db_connection_noerror failed on node 0
+2025-10-31 18:03:20.156: child pid 227: WARNING:  failed to connect to PostgreSQL server, getaddrinfo() failed with error "Temporary failure in name resolution"
+2025-10-31 18:03:20.156: child pid 227: FATAL:  failed to create a backend 0 connection
+2025-10-31 18:03:20.156: child pid 227: DETAIL:  not executing failover because failover_on_backend_error is off
+2025-10-31 18:03:31.267: main pid 1: WARNING:  failed to connect to PostgreSQL server, getaddrinfo() failed with error "Temporary failure in name resolution"
+2025-10-31 18:03:31.267: main pid 1: LOG:  find_primary_node: make_persistent_db_connection_noerror failed on node 1
+2025-10-31 18:03:31.267: main pid 1: LOG:  reaper handler
+2025-10-31 18:03:31.268: main pid 1: LOG:  reaper handler: exiting normall
