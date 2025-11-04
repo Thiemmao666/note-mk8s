@@ -1,0 +1,115 @@
+. Add this configuration into the application.yml file
+
+application.yml
+
+
+# Update the package according to your package
+logging:
+  level:
+    com:
+      samsung:
+        spp:
+          devices: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
+
+. Install Alloy, Loki
+
+.. Install Loki
+
+Permission volumes: loki-01-pv.yml loki-02-pv.yml loki-02-pv.yml
+Chart: loki-6.29.0.tgz
+Values file: single-binary-values-srv.yaml
+Note: Modify the path to point to your directory and allow access permission to directory of persistent volumes.
+
+Install Loki
+
+
+helm install loki ./loki-6.29.0.tgz -f single-binary-values-srv.yaml -n monitoring
+
+# Check installed chart
+helm ls -n monitoring
+
+
+.. Install Alloy
+
+  - Chart: alloy-1.0.3.tgz
+
+  - Values file: values-alloy-srv.yaml
+
+values-alloy-srv.yml
+
+
+alloy:
+  mounts:
+    varlog: true
+  configMap:
+    content: |
+      logging {
+        level  = "info"
+        format = "logfmt"
+      }
+
+      // Discovers all kubernetes pods.
+      // Relies on serviceAccountName=grafana-alloy in the pod spec for permissions.
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      loki.source.kubernetes "pods" {
+        targets    = discovery.kubernetes.pods.targets
+        forward_to = [loki.write.endpoint.receiver]
+      }
+
+      loki.write "endpoint" {
+        endpoint {
+            url = "http://loki-gateway.monitoring.svc.cluster.local:80/loki/api/v1/push"
+            tenant_id = "local"
+        }
+      }
+
+image:
+  # -- Grafana Alloy image registry (defaults to docker.io)
+  registry: "docker-remote.bart.sec.samsung.net"
+
+# Options for the extra controller used for config reloading.
+configReloader:
+  image:
+    # -- Config reloader image registry (defaults to docker.io)
+    registry: "quay-docker-remote.bart.sec.samsung.net"
+
+
+Install Alloy locally using Helm
+
+
+# Install Alloy
+helm install --namespace monitoring alloy ./alloy-1.0.3.tgz -f values-alloy-srv.yaml
+
+# Check deployed chart
+helm ls -n monitoring
+
+# Forward port to access Alloy UI
+kubectl --namespace monitoring port-forward --address 0.0.0.0 ${replace-this-with-pod-name} 12345
+
+
+ - Access UI to check if Alloy works: http://localhost:12345
+
+
+
+.. Install Grafan, refer to 1. Install Grafana
+
+
+
+Check if Loki works.
+
+Verify Loki
+
+
+# Push test data
+curl -H "Content-Type: application/json" -XPOST -s "http://127.0.0.1:3100/loki/api/v1/push"  \
+--data-raw "{\"streams\": [{\"stream\": {\"job\": \"test\"}, \"values\": [[\"$(date +%s)000000000\", \"fizzbuzz\"]]}]}" \
+-H X-Scope-OrgId:local
+
+#Then verify that Loki did receive the data using the following command
+curl "http://127.0.0.1:3100/loki/api/v1/query_range" --data-urlencode 'query={job="test"}' -H X-Scope-OrgId:local | jq .data.result
