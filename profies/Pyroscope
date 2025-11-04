@@ -1,0 +1,233 @@
+Continuous profiling with Grafana Pyroscope.
+
+Reference:
+
+https://grafana.com/docs/pyroscope/latest/introduction/
+
+https://grafana.com/docs/pyroscope/latest/deploy-kubernetes/
+
+What is Grafana Pyroscope?
+Grafana Pyroscope is an open source continuous profiling database that provides fast, scalable, highly available, and efficient storage and querying. This helps you get a better understanding of resource usage (CPU, Memory) in your applications down to the line number.
+
+Refer to: https://grafana.com/oss/pyroscope/
+
+
+
+
+
+There three method to configure the application to send profiles (https://grafana.com/docs/pyroscope/latest/configure-client/).
+
+Auto-instrumentation using Grafana Alloy (no need to modify application code)
+SDK instrumentation (Need to modify application code, easy to customize the profile data), refer this example: https://github.com/grafana/pyroscope/tree/main/examples/language-sdk-instrumentation/java/rideshare
+SDK instrumentation through Grafana Alloy (Can be customized and low latency through Alloy)
+
+
+This guide is going to talk about auto-instrumentation using Grafana Alloy.
+
+. Update Grafana Alloy to scrape profile data from the application/services
+
+Note:
+
+Since Alloy needs to discovery all java process running on host machine to scrape profile data then sends to Pyroscrope.
+
+So need enable hostPID to allow Alloy to list process in Kubernetes pods. With that it can export __process_pid__ that is required by Pyroscope.
+
+Update Allow configuration as below (the values file): values-alloy-pyroscope-srv.yaml
+
+Update Alloy for scraping profile data
+
+
+controller:
+  # -- Configures Pods to use the host PID namespace.
+  hostPID: true
+
+# Permission to read host process
+global:
+  # -- Security context to apply to the Grafana Alloy pod.
+  podSecurityContext:
+    privileged: true
+    runAsUser: 0
+    capabilities:
+      add: ["SYS_ADMIN", "SYS_PTRACE"]
+
+alloy:
+  mounts:
+    varlog: true
+  configMap:
+    content: |
+      logging {
+        level  = "info"
+        format = "logfmt"
+      }
+
+      // Discovers all kubernetes pods.
+      // Relies on serviceAccountName=grafana-alloy in the pod spec for permissions.
+      discovery.kubernetes "pods" {
+        selectors {
+          field = "spec.nodeName=" + env("HOSTNAME")
+          role = "pod"
+        }
+        role = "pod"
+      }
+
+      // Discovers all processes running on the node.
+      // Relies on a security context with elevated permissions for the alloy container (running as root).
+      // Relies on hostPID=true on the pod spec, to be able to see processes from other pods.
+      discovery.process "all" {
+        // Merges kubernetes and process data (using container_id), to attach kubernetes labels to discovered processes.
+        join = discovery.kubernetes.pods.targets
+      }
+
+      // Drops non-java processes and adjusts labels.    
+      discovery.relabel "java" {
+        targets = discovery.process.all.targets
+
+        // Drops non-java processes.
+        rule {
+          source_labels = ["__meta_process_exe"]
+          action = "keep"
+          regex = ".*/java$"
+        }
+
+        // Drop any targets that do not have the value "neo" in their "__meta_kubernetes_namespace" label.
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          action        = "keep"
+          regex         = "neo"
+        }
+
+        // Sets up the service_name using the namespace and container names.
+        rule {
+          source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_container_name"]
+          target_label = "service_name"
+          separator = "/"
+        }
+
+        // Sets up kubernetes labels (labels with the __ prefix are ultimately dropped).
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          target_label = "node"
+        }
+
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label = "namespace"
+        }
+
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label = "pod"
+        }
+
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label = "container"
+        }
+
+        // Sets up the cluster label.
+        // Relies on a pod-level annotation with the "cluster_name" name.
+        // Alternatively it can be set up using external_labels in pyroscope.write. 
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_pod_annotation_cluster_name"]
+          target_label = "cluster"
+        }
+      }
+
+      // Attaches the Pyroscope profiler to the processes returned by the discovery.relabel component.
+      // Relies on a security context with elevated permissions for the alloy container (running as root).
+      // Relies on hostPID=true on the pod spec, to be able to access processes from other pods.
+      pyroscope.java "java" {
+        profiling_config {
+          interval = "15s"
+          alloc = "512k"
+          cpu = true
+          lock = "10ms"
+          sample_rate = 100
+        }
+        forward_to = [pyroscope.write.local.receiver]
+        targets = discovery.relabel.java.output
+      }
+        
+      pyroscope.write "local" {
+        // Send metrics to the locally running Pyroscope instance.
+        endpoint {
+          url = "http://pyroscrope-pyroscope:4040"
+        }
+        external_labels = {
+          "static_label" = "static_label_value",
+        }
+      }
+
+      loki.source.kubernetes "pods" {
+        targets    = discovery.kubernetes.pods.targets
+        forward_to = [loki.write.endpoint.receiver]
+      }
+
+      loki.write "endpoint" {
+        endpoint {
+            url = "http://loki-gateway.monitoring.svc.cluster.local:80/loki/api/v1/push"
+            tenant_id = "local"
+        }
+      }
+
+
+url = "http://pyroscrope-pyroscope:4040" is endpoint of Pyroscrope to receive profile data from Alloy, should be changed of Pyroscope is deployed at different endpoint.
+
+Verify Allow works or not by access UI.
+
+
+
+Forward Alloy port
+
+
+# Upgrade Alloy with new configuration
+helm upgrade --namespace monitoring alloy ./alloy-1.0.3.tgz -f values-alloy-pyroscope-srv.yaml
+
+# Forward port to access UI
+kubectl --namespace monitoring port-forward --address 0.0.0.0 ${Replace-with-pod-name} 12345
+Access Alloy UI at http://localhost:12345
+
+
+
+
+
+. Install Pyroscope
+ .. Chart: pyroscope-1.13.4.tgz
+ .. Values file: values-pyroscope-srv.yaml
+
+Note: should disable Alloy sub chart in Pyroscope and add pod IP config.
+
+Pyroscope values update
+
+
+extraArgs:
+    log.level: debug
+    memberlist.bind-addr: $(MY_POD_IP)
+
+  extraLabels: {}
+
+  extraEnvVars:
+    MY_POD_IP:
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+
+# -------------------------------------
+# Configuration for `alloy` child chart
+# -------------------------------------
+alloy:
+  enabled: false
+Install Pyroscope
+
+
+helm install --namespace monitoring pyroscrope ./pyroscope-1.13.4.tgz -f values-pyroscope-srv.yaml
+
+
+. Create Pyroscope datasource and view the profile data at Drilldow > Profiles on Grafana (1. Install Grafana)
+
+.. Datasource
