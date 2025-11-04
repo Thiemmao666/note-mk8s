@@ -1,0 +1,63 @@
+## Monitors ConfigMap changes and POSTs to a URL
+## Ref: https://github.com/prometheus-operator/prometheus-operator/tree/main/cmd/prometheus-config-reloader
+##
+configmapReload:
+  prometheus:
+    image:
+      repository: quay-docker-remote.bart.sec.samsung.net/prometheus-operator/prometheus-config-reloader
+
+server:
+  ## Prometheus server container image
+  ##
+  image:
+    repository: quay-docker-remote.bart.sec.samsung.net/prometheus/prometheus
+
+  ## Additional Prometheus server container arguments
+  ## Set to null for argumentless flags
+  ##
+  extraArgs:
+    web.enable-remote-write-receiver: null
+
+kube-state-metrics:
+  image:
+    registry: k8s-docker-remote.bart.sec.samsung.net
+
+prometheus-node-exporter:
+  image:
+    registry: quay-docker-remote.bart.sec.samsung.net
+
+prometheus-pushgateway:
+  image:
+    repository: quay-docker-remote.bart.sec.samsung.net/prometheus/pushgateway
+
+alertmanager:
+  image:
+    repository: quay-docker-remote.bart.sec.samsung.net/prometheus/alertmanager
+  extraArgs:
+    cluster.advertise-address: "[$(POD_IP)]:9093"
+
+## Prometheus server ConfigMap entries
+##
+serverFiles:
+  prometheus.yml:
+    scrape_configs:
+      - job_name: 'configserver'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: [ 'configserver.neo.svc.cluster.local:8087' ]
+      - job_name: 'gateway'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: [ 'gateway.neo.svc.cluster.local:9000' ]
+      - job_name: 'data-collection'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: [ 'data-collection.neo.svc.cluster.local:9001' ]
+      - job_name: 'devices'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: [ 'devices.neo.svc.cluster.local:9002' ]
+      - job_name: 'statistic'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: [ 'statistic.neo.svc.cluster.local:9003' ]
