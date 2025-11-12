@@ -1,0 +1,133 @@
+resourceType: statefulset
+replicaCount: 6
+podManagementPolicy: Parallel
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 100
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - grafana-alloy
+        topologyKey: kubernetes.io/hostname
+alloy:
+  clustering:
+    enabled: true
+  resources:
+    limits:
+    requests:
+  enableReporting: false
+  extraEnvVars:
+    - name: HOST_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.hostIP
+  configuration: |-
+    discovery.kubernetes "nodes" {
+      role = "node"
+    }
+
+    prometheus.scrape "kubelet" {
+      job_name = "kubelet"
+      scrape_interval = "15s"
+      targets = discovery.kubernetes.nodes.targets
+      forward_to = [prometheus.remote_write.default.receiver]
+      scheme = "https"
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      tls_config {
+        insecure_skip_verify = true
+      }
+      clustering {
+        enabled = true
+      }
+    }
+
+    prometheus.scrape "kubelet_cadvisor" {
+      job_name = "kubelet_cadvisor"
+      scrape_interval = "15s"
+      targets = discovery.kubernetes.nodes.targets
+      forward_to = [prometheus.remote_write.default.receiver]
+      scheme = "https"
+      metrics_path = "/metrics/cadvisor"
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      tls_config {
+        insecure_skip_verify = true
+      }
+      clustering {
+        enabled = true
+      }
+    }
+
+    prometheus.exporter.unix "node_exporter" {}
+
+    discovery.relabel "node_exporter" {
+      targets = prometheus.exporter.unix.node_exporter.targets
+      rule {
+        action = "labeldrop"
+        regex = "job"
+      }
+    }
+
+    prometheus.scrape "node_exporter" {
+      job_name = "node_exporter"
+      scrape_interval = "15s"
+      targets = discovery.relabel.node_exporter.output
+      forward_to = [prometheus.remote_write.default.receiver]
+    }
+
+    remote.kubernetes.secret "postgres_credentials" {
+      namespace = "mcc"
+      name = "pgpool"
+    }
+
+    prometheus.exporter.postgres "postgres_exporter" {
+      data_source_names = ["postgresql://" + remote.kubernetes.secret.postgres_credentials.data["PGPOOL_POSTGRES_USERNAME"] + ":" + remote.kubernetes.secret.postgres_credentials.data["PGPOOL_POSTGRES_PASSWORD"] + "@pgpool-service.mcc.svc.cluster.local:5535/postgres?sslmode=disable"]
+      autodiscovery {
+        enabled = true
+      }
+    }
+
+    discovery.relabel "postgres_exporter" {
+      targets = prometheus.exporter.postgres.postgres_exporter.targets
+      rule {
+        action = "labeldrop"
+        regex = "job"
+      }
+    }
+
+    prometheus.scrape "postgres_exporter" {
+      job_name = "postgres_exporter"
+      scrape_interval = "15s"
+      targets    = discovery.relabel.postgres_exporter.output
+      forward_to = [prometheus.remote_write.default.receiver]
+      clustering {
+        enabled = true
+      }
+    }
+
+    prometheus.scrape "kube_state_metrics" {
+      job_name = "kube_state_metrics"
+      scrape_interval = "15s"
+      targets = [
+        {"__address__" = "kube-state-metrics.test.svc.cluster.local:8080"},
+      ]
+      forward_to = [prometheus.remote_write.default.receiver]
+      clustering {
+        enabled = true
+      }
+    }
+
+    prometheus.remote_write "default" {
+      endpoint {
+        url = "http://prometheus-server.test.svc.cluster.local/api/v1/write"
+      }
+    }
