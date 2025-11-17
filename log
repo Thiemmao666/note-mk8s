@@ -1,6 +1,122 @@
-a@a1:~$ helm pull bitnami/grafana-alloy --repo https://charts.bitnami.com/bitnami
-Error: looks like "https://charts.bitnami.com/bitnami" is not a valid chart repository or cannot be reached: Get "https://charts.bitnami.com/bitnami/index.yaml": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
-a@a1:~$ helm pull bitnami/grafana-alloy --h  https://charts.bitnami.com/bitnami   
+configuration: |-
+    logging {
+        level  = "info"
+        format = "logfmt"
+      }
 
-helm pull  oci://registry-1.docker.io/bitnamicharts/grafana-alloy
-Error: Get "https://registry-1.docker.io/v2/bitnamicharts/grafana-alloy/tags/list": proxyconnect tcp: dial tcp 192.168.1.100:8080: i/o timeout
+      discovery.kubernetes "pods" {
+        selectors {
+          field = "spec.nodeName=" + env("HOSTNAME")
+          role = "pod"
+        }
+        role = "pod"
+      }
+
+ 
+      pyroscope.ebpf "instance" {
+        forward_to = [pyroscope.write.endpoint.receiver]
+        targets = discovery.kubernetes.pods.targets
+      }
+      pyroscope.write "endpoint" {
+        endpoint {
+          url = "http://pyroscope.test-molo.svc.cluster.local:4040"
+        }
+      }
+
+      discovery.kubernetes "all_pods" {
+        role = "pod"
+          selectors {
+          field = "spec.nodeName=" + sys.env("HOSTNAME")
+          role = "pod"
+        }
+      }
+
+      discovery.relabel "local_pods" {
+        targets = discovery.kubernetes.all_pods.targets
+        rule {
+        action = "drop"
+        regex = "Succeeded|Failed"
+        source_labels = ["__meta_kubernetes_pod_phase"]
+        }
+        rule {
+          action = "replace"
+          regex = "(.*)@(.*)"
+          replacement = "ebpf/${1}/${2}"
+          separator = "@"
+          source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_container_name"]
+          target_label = "service_name"
+        }
+        rule {
+          action = "labelmap"
+          regex = "__meta_kubernetes_pod_label_(.+)"
+        }
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label = "namespace"
+        }
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label = "pod"
+        }
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          target_label = "node"
+        }
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label = "container"
+        }
+      }
+      pyroscope.ebpf "local_pods" {
+        forward_to = [ pyroscope.write.endpoint.receiver ]
+        targets = discovery.relabel.local_pods.output
+      }
+
+      discovery.relabel "allpod" {
+        targets = discovery.kubernetes.all_pods.targets
+        rule {
+          action = "drop"
+          regex = "Succeeded|Failed"
+          source_labels = ["__meta_kubernetes_pod_phase"]
+        }
+        rule {
+          action = "replace"
+          regex = "(.*)@(.*)"
+          replacement = "ebpf/${1}/${2}"
+          separator = "@"
+          source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_container_name"]
+          target_label = "service_name"
+        }
+        rule {
+          action = "labelmap"
+          regex = "__meta_kubernetes_pod_label_(.+)"
+        }
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label = "namespace"
+        }
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label = "pod"
+        }
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          target_label = "node"
+        } 
+        rule {
+          action = "replace"
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label = "container"
+        }
+      }
+      pyroscope.ebpf "allpod" {
+        forward_to = [ pyroscope.write.endpoint.receiver ]
+        targets = discovery.relabel.allpod.output
+      }        
