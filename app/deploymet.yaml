@@ -1,0 +1,148 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: master-data-service-deployment
+  namespace: mcc
+  labels:
+    app: mcc-master-data-service
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: mcc-master-data-service
+  template:
+    metadata:
+      labels:
+        app: mcc-master-data-service
+    spec:
+      nodeSelector:
+        role: app
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - mcc-master-data-service
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: mcc-master-data-service
+          image: sg-docker-local.bart.sec.samsung.net/mcc/stg/master-data-service:2.0.2.251008-stg
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: mcc-configmap
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: mcc-master-data-service
+            - name: JAVA_TOOL_OPTIONS
+            #  value: "-Duser.timezone=Asia/Ho_Chi_Minh "
+
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: JAVA_TOOL_OPTIONS
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: OTEL_EXPORTER_OTLP_ENDPOINT
+            - name: OTEL_METRICS_EXPORTER
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: OTEL_METRICS_EXPORTER
+            - name: OTEL_LOGS_EXPORTER
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: OTEL_LOGS_EXPORTER
+            - name: OTEL_SERVICE_NAME
+              value: mcc-master-data-service
+            - name: PYROSCOPE_SERVER_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: PYROSCOPE_SERVER_ADDRESS
+            - name: PYROSCOPE_FORMAT
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: PYROSCOPE_FORMAT
+            - name: PYROSCOPE_PROFILING_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: PYROSCOPE_PROFILING_INTERVAL
+            - name: PYROSCOPE_PROFILER_EVENT
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: PYROSCOPE_PROFILER_EVENT
+            - name: PYROSCOPE_PROFILER_LOCK
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: PYROSCOPE_PROFILER_LOCK
+            - name: PYROSCOPE_PROFILER_ALLOC
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: PYROSCOPE_PROFILER_ALLOC
+            - name: PYROSCOPE_PROFILER_LOCK
+              valueFrom:
+                configMapKeyRef:
+                  name: mcc-configmap-molo
+                  key: PYROSCOPE_PROFILER_LOCK
+            - name: PYROSCOPE_APPLICATION_NAME
+              value: master-data-service.jar  
+              #-javaagent:/jmx/jmx-agent.jar=7071:/jmx/config.yaml -XX:+UseG1GC -Xmx525m"
+
+          ports:
+            - containerPort: 8083
+          #      - containerPort: 7071
+          volumeMounts:
+            - name: time-zone
+              mountPath: /etc/localtime
+            - name: jmx
+              mountPath: /jar
+          startupProbe:
+            httpGet:
+              path: /master-data-service/actuator/health/liveness
+              port: 8083
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /master-data-service/actuator/health/liveness
+              port: 8083
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /master-data-service/actuator/health/readiness
+              port: 8083
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+            successThreshold: 1
+      imagePullSecrets:
+        - name: bartregcred
+      volumes:
+        - name: time-zone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Ho_Chi_Minh
+        - name: jmx
+          persistentVolumeClaim:
+            claimName: jar-pvc
