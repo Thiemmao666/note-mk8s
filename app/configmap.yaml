@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mcc-configmap-molo
+  namespace: mcc
+data:
+  JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.20.1.jar -Duser.timezone=Asia/Ho_Chi_Minh -javaagent:/jar/pyroscope.jar "
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo.test-molo.svc.cluster.local:4318
+  OTEL_METRICS_EXPORTER: none
+  OTEL_LOGS_EXPORTER: none
+#  PYROSCOPE_APPLICATION_NAME: java.jar
+  PYROSCOPE_SERVER_ADDRESS: http://pyroscope.test-molo.svc.cluster.local:4040
+  PYROSCOPE_FORMAT: jfr
+  PYROSCOPE_PROFILING_INTERVAL: 10ms
+  PYROSCOPE_PROFILER_EVENT: itimer
+  PYROSCOPE_PROFILER_LOCK: 10ms
+  PYROSCOPE_PROFILER_ALLOC: 512k
+  PYROSCOPE_PROFILER_LOCK: 10ms
