@@ -1,0 +1,48 @@
+prometheus-postgres-exporter:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: prometheuscommunity/postgres-exporter
+    # if not set appVersion field from Chart.yaml is used
+    tag: 'master'
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+  nodeSelector:
+    kubernetes.io/hostname: mcc-master02
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  config:
+    datasource:
+      # Specify one of both datasource or datasourceSecret
+      host: 'postgres-headless.mcc.svc.cluster.local'
+      user: mccuser
+      # Specify userFile if DB username is stored in a file.
+      userFile: ''
+      userSecret: {}
+      # Only one of password, passwordFile, passwordSecret and pgpassfile can be specified
+      password: mcc@13579
+      # Specify passwordFile if DB password is stored in a file
+      passwordFile: ''
+      # Specify passwordSecret if DB password is stored in secret.
+      passwordSecret: {}
+      pgpassfile: ''
+      # If pgpassfile is set, it is used to initialize the PGPASSFILE environment variable.
+      port: '5432'
+      database: mcc_master_data_db
+      sslmode: disable
+      extraParams: ''
+    datasourceSecret:
+      {}
+      # Specifies if datasource should be sourced from secret value in format: postgresql://login:password@hostname:port/dbname?sslmode=disable
+    disableCollectorDatabase: false
+    disableCollectorBgwriter: false
+    disableDefaultMetrics: false
+    disableSettingsMetrics: false
