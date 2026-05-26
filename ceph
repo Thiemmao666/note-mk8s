@@ -17,3 +17,50 @@ pool 6 'mccfs-metadata' replicated size 2 min_size 1 crush_rule 3 object_hash rj
 pool 7 'mccfs-mccpool' replicated size 2 min_size 1 crush_rule 4 object_hash rjenkins pg_num 128 pgp_num 32 pg_num_target 32 autoscale_mode on last_change 472 lfor 0/0/462 flags hashpspool stripe_width 0 compression_mode none application cephfs read_balance_score 1.00
 
 bash-5.1$ 
+
+
+rook-ceph-osd-0-6669f464df-8wlmk                           0/2     Init:CrashLoopBackOff   7 (2m21s ago)   13m   10.244.10.23     sevtdpassywn02   <none>           <none>
+rook-ceph-osd-1-56d6854c47-2hwkt                           0/2     Init:Error              7 (5m54s ago)   11m   10.244.7.28      sevtdpassywn01   <none>           <none>
+rook-ceph-osd-2-78746dd98d-dr6n6                           2/2     Running                 0               84d   10.244.2.28      sevtdpassymn03   <none>           <none>
+
+Events:
+  Type     Reason     Age                  From               Message
+  ----     ------     ----                 ----               -------
+  Normal   Scheduled  13m                  default-scheduler  Successfully assigned rook-ceph/rook-ceph-osd-0-6669f464df-8wlmk to sevtdpassywn02
+  Normal   Pulled     13m                  kubelet            spec.initContainers{activate}: Container image "quay.io/ceph/ceph:v20.2" already present on machine and can be accessed by the pod
+  Normal   Created    13m                  kubelet            spec.initContainers{activate}: Container created
+  Normal   Started    13m                  kubelet            spec.initContainers{activate}: Container started
+  Normal   Pulled     2m50s (x8 over 13m)  kubelet            spec.initContainers{expand-bluefs}: Container image "quay.io/ceph/ceph:v20.2" already present on machine and can be accessed by the pod
+  Normal   Created    2m50s (x8 over 13m)  kubelet            spec.initContainers{expand-bluefs}: Container created
+  Normal   Started    2m50s (x8 over 13m)  kubelet            spec.initContainers{expand-bluefs}: Container started
+  Warning  BackOff    28s (x15 over 13m)   kubelet            spec.initContainers{expand-bluefs}: Back-off restarting failed container expand-bluefs in pod rook-ceph-osd-0-6669f464df-8wlmk_rook-ceph(cec4cb22-8996-4c75-99bc-fc1d6763e60c)
+
+2026-05-26 08:00:30.407406 W | disruption: failed to get the node name for the OSD 0
+2026-05-26 08:00:30.772019 I | disruption: OSD(s) [1 0] are down but PGs are clean. PG Status: "all PGs in cluster are clean"
+2026-05-26 08:00:30.772063 I | disruption: all PGs are active+clean. Restoring default OSD pdb settings
+2026-05-26 08:00:30.772069 I | disruption: creating the default pdb "rook-ceph-osd" with maxUnavailable=1 for all osd
+2026-05-26 08:00:30.778506 I | disruption: deleting temporary blocking pdb with "rook-ceph-osd-host-sevtdpassymn03" with maxUnavailable=0 for "host" failure domain "sevtdpassymn03"
+2026-05-26 08:00:31.111609 I | disruption: reconciling osd pdb controller
+
+rook-ceph-osd-0                           0/1     1            0           16m
+rook-ceph-osd-1                           0/1     1            0           16m
+rook-ceph-osd-2                           1/1     1            1           86d
+
+sevtmcc@sevtdpassywn01:~$ sudo wipefs -a /dev/sdb 
+sevtmcc@sevtdpassywn01:~$ lsblk
+NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda                         8:0    0  150G  0 disk 
+├─sda1                      8:1    0    1M  0 part 
+├─sda2                      8:2    0    2G  0 part /boot
+└─sda3                      8:3    0  148G  0 part 
+  └─ubuntu--vg-ubuntu--lv 252:0    0  148G  0 lvm  /var/lib/kubelet/pods/b1796826-c97a-4082-a385-85f0e8018722/volume-subpaths/config-volume-ip/mcc-frontend/3
+                                                   /
+sdb                         8:16   0  200G  0 disk 
+sr0                        11:0    1  3.1G  0 rom  
+sevtmcc@sevtdpassywn01:~$ sudo dd  if=/dev/zero of=/dev/sdb bs=1M conut=100 oflag=direct,dsync
+dd: unrecognized operand 'conut=100'
+Try 'dd --help' for more information.
+sevtmcc@sevtdpassywn01:~$ sudo dd  if=/dev/zero of=/dev/sdb bs=1M count=100 oflag=direct,dsync
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB, 100 MiB) copied, 0.175539 s, 597 MB/s
