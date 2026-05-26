@@ -1,0 +1,96 @@
+
+2026-05-26 10:13:16.831308 D | sys: udevadm info output: "DEVPATH=/devices/pci0000:00/0000:00:15.0/0000:03:00.0/host2/target2:0:0/2:0:0:0/block/sda/sda3\nDEVNAME=/dev/sda3\nDEVTYPE=partition\nDISKSEQ=9\nPARTN=3\nMAJOR=8\nMINOR=3\nSUBSYSTEM=block\nUSEC_INITIALIZED=820970\nID_SCSI=1\nSCSI_TPGS=0\nSCSI_TYPE=disk\nSCSI_VENDOR=VMware\nSCSI_VENDOR_ENC=VMware\\x20\\x20\nSCSI_MODEL=Virtual_disk\nSCSI_MODEL_ENC=Virtual\\x20disk\\x20\\x20\\x20\\x20\nSCSI_REVISION=2.0\nID_VENDOR=VMware\nID_VENDOR_ENC=VMware\\x20\\x20\nID_MODEL=Virtual_disk\nID_MODEL_ENC=Virtual\\x20disk\\x20\\x20\\x20\\x20\nID_REVISION=2.0\nID_TYPE=disk\nDM_MULTIPATH_DEVICE_PATH=0\nID_SCSI_INQUIRY=1\nID_BUS=scsi\nID_PATH=pci-0000:03:00.0-scsi-0:0:0:0\nID_PATH_TAG=pci-0000_03_00_0-scsi-0_0_0_0\nID_PART_TABLE_UUID=58d0c8f3-a108-4332-88f1-5e907e46f52a\nID_PART_TABLE_TYPE=gpt\nID_FS_UUID=ggQhbQ-i1cG-5Rt8-yD20-MptC-roJ0-Dm26t1\nID_FS_UUID_ENC=ggQhbQ-i1cG-5Rt8-yD20-MptC-roJ0-Dm26t1\nID_FS_VERSION=LVM2 001\nID_FS_TYPE=LVM2_member\nID_FS_USAGE=raid\nID_PART_ENTRY_SCHEME=gpt\nID_PART_ENTRY_UUID=66f44dc4-0100-4a19-b677-df8a50c2f627\nID_PART_ENTRY_TYPE=0fc63daf-8483-4772-8e79-3d69d8477de4\nID_PART_ENTRY_NUMBER=3\nID_PART_ENTRY_OFFSET=4198400\nID_PART_ENTRY_SIZE=310372352\nID_PART_ENTRY_DISK=8:0\nDEVLINKS=/dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:0:0-part3 /dev/disk/by-diskseq/9-part3 /dev/disk/by-partuuid/66f44dc4-0100-4a19-b677-df8a50c2f627 /dev/disk/by-id/lvm-pv-uuid-ggQhbQ-i1cG-5Rt8-yD20-MptC-roJ0-Dm26t1\nTAGS=:systemd:\nCURRENT_TAGS=:systemd:"
+2026-05-26 10:13:16.831343 D | exec: Running command: lsblk /dev/sdb --bytes --nodeps --pairs --paths --output SIZE,ROTA,RO,TYPE,PKNAME,NAME,KNAME,MOUNTPOINT,FSTYPE
+2026-05-26 10:13:16.833691 D | sys: lsblk output: "SIZE=\"214748364800\" ROTA=\"1\" RO=\"0\" TYPE=\"disk\" PKNAME=\"\" NAME=\"/dev/sdb\" KNAME=\"/dev/sdb\" MOUNTPOINT=\"\" FSTYPE=\"\""
+2026-05-26 10:13:16.833719 D | exec: Running command: sgdisk --print /dev/sdb
+2026-05-26 10:13:16.836667 W | inventory: uuid not found for device /dev/sdb. output=Creating new GPT entries in memory.
+Disk /dev/sdb: 419430400 sectors, 200.0 GiB
+Model: Virtual disk    
+Sector size (logical/physical): 512/512 bytes
+Disk identifier (GUID): A67C6FC9-6C60-4745-965B-F545E054F050
+Partition table holds up to 128 entries
+Main partition table begins at sector 2 and ends at sector 33
+First usable sector is 34, last usable sector is 419430366
+Partitions will be aligned on 2048-sector boundaries
+Total free space is 419430333 sectors (200.0 GiB)
+
+Number  Start (sector)    End (sector)  Size       Code  Name
+2026-05-26 10:13:16.836684 D | exec: Running command: udevadm info --query=property /dev/sdb
+2026-05-26 10:13:16.841326 D | sys: udevadm info output: "DEVPATH=/devices/pci0000:00/0000:00:15.0/0000:03:00.0/host2/target2:0:1/2:0:1:0/block/sdb\nDEVNAME=/dev/sdb\nDEVTYPE=disk\nDISKSEQ=10\nMAJOR=8\nMINOR=16\nSUBSYSTEM=block\nUSEC_INITIALIZED=820747\nSCSI_TPGS=0\nSCSI_TYPE=disk\nSCSI_VENDOR=VMware\nSCSI_VENDOR_ENC=VMware\\x20\\x20\nSCSI_MODEL=Virtual_disk\nSCSI_MODEL_ENC=Virtual\\x20disk\\x20\\x20\\x20\\x20\nSCSI_REVISION=2.0\nID_SCSI=1\nID_SCSI_INQUIRY=1\nID_VENDOR=VMware\nID_VENDOR_ENC=VMware\\x20\\x20\nID_MODEL=Virtual_disk\nID_MODEL_ENC=Virtual\\x20disk\\x20\\x20\\x20\\x20\nID_REVISION=2.0\nID_TYPE=disk\nMPATH_SBIN_PATH=/sbin\nDM_MULTIPATH_DEVICE_PATH=0\nID_BUS=scsi\nID_PATH=pci-0000:03:00.0-scsi-0:0:1:0\nID_PATH_TAG=pci-0000_03_00_0-scsi-0_0_1_0\nDEVLINKS=/dev/disk/by-diskseq/10 /dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:1:0\nTAGS=:systemd:\nCURRENT_TAGS=:systemd:"
+2026-05-26 10:13:16.841373 D | exec: Running command: lsblk --noheadings --path --list --output NAME /dev/sdb
+2026-05-26 10:13:16.842775 D | exec: Running command: lsblk /dev/sr0 --bytes --nodeps --pairs --paths --output SIZE,ROTA,RO,TYPE,PKNAME,NAME,KNAME,MOUNTPOINT,FSTYPE
+2026-05-26 10:13:16.846251 D | sys: lsblk output: "SIZE=\"3303444480\" ROTA=\"1\" RO=\"0\" TYPE=\"rom\" PKNAME=\"\" NAME=\"/dev/sr0\" KNAME=\"/dev/sr0\" MOUNTPOINT=\"\" FSTYPE=\"iso9660\""
+2026-05-26 10:13:16.846285 W | inventory: skipping device "sr0". unsupported diskType rom
+2026-05-26 10:13:16.846292 D | exec: Running command: lsblk /dev/dm-0 --bytes --nodeps --pairs --paths --output SIZE,ROTA,RO,TYPE,PKNAME,NAME,KNAME,MOUNTPOINT,FSTYPE
+2026-05-26 10:13:16.849569 D | sys: lsblk output: "SIZE=\"158909595648\" ROTA=\"1\" RO=\"0\" TYPE=\"lvm\" PKNAME=\"\" NAME=\"/dev/mapper/ubuntu--vg-ubuntu--lv\" KNAME=\"/dev/dm-0\" MOUNTPOINT=\"/rootfs\" FSTYPE=\"ext4\""
+2026-05-26 10:13:16.849589 D | exec: Running command: udevadm info --query=property /dev/dm-0
+2026-05-26 10:13:16.853450 D | sys: udevadm info output: "DEVPATH=/devices/virtual/block/dm-0\nDEVNAME=/dev/dm-0\nDEVTYPE=disk\nDISKSEQ=11\nMAJOR=252\nMINOR=0\nSUBSYSTEM=block\nUSEC_INITIALIZED=887679\nDM_UDEV_DISABLE_LIBRARY_FALLBACK_FLAG=1\nDM_UDEV_PRIMARY_SOURCE_FLAG=1\nDM_UDEV_RULES=1\nDM_UDEV_RULES_VSN=2\nDM_NAME=ubuntu--vg-ubuntu--lv\nDM_UUID=LVM-nuWZ0B46FqOGCVinQN0FoPB94k7s7GU3NvvjvtWUud9v3QhbkBvZjteqpbk2Ge1e\nDM_SUSPENDED=0\nDM_VG_NAME=ubuntu-vg\nDM_LV_NAME=ubuntu-lv\nID_FS_UUID=61db3a8e-7767-45e1-86b0-d28ceb144559\nID_FS_UUID_ENC=61db3a8e-7767-45e1-86b0-d28ceb144559\nID_FS_VERSION=1.0\nID_FS_BLOCKSIZE=4096\nID_FS_LASTBLOCK=38796288\nID_FS_SIZE=158909595648\nID_FS_TYPE=ext4\nID_FS_USAGE=filesystem\nSYSTEMD_READY=1\nDEVLINKS=/dev/disk/by-id/dm-uuid-LVM-nuWZ0B46FqOGCVinQN0FoPB94k7s7GU3NvvjvtWUud9v3QhbkBvZjteqpbk2Ge1e /dev/ubuntu-vg/ubuntu-lv /dev/disk/by-id/dm-name-ubuntu--vg-ubuntu--lv /dev/disk/by-dname/ubuntu--vg-ubuntu--lv /dev/mapper/ubuntu--vg-ubuntu--lv /dev/disk/by-uuid/61db3a8e-7767-45e1-86b0-d28ceb144559\nTAGS=:systemd:\nCURRENT_TAGS=:systemd:"
+2026-05-26 10:13:16.853471 D | inventory: discovered disks are:
+2026-05-26 10:13:16.853542 D | inventory: &{Name:sda1 Parent:sda HasChildren:false DevLinks:/dev/disk/by-diskseq/9-part1 /dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:0:0-part1 /dev/disk/by-partuuid/1967d905-925e-4154-ad9d-357e5ae2dcfe Size:1048576 UUID: Serial: Type:part Rotational:true Readonly:false Partitions:[] Filesystem: Mountpoint: Vendor:VMware Model:Virtual_disk WWN: WWNVendorExtension: Empty:false CephVolumeData: RealPath:/dev/sda1 KernelName:sda1 Encrypted:false}
+2026-05-26 10:13:16.853552 D | inventory: &{Name:sda2 Parent:sda HasChildren:false DevLinks:/dev/disk/by-partuuid/9ae5b76c-23a6-41e5-ba64-d86ab5abcc3a /dev/disk/by-uuid/0c8eac29-ba7a-4e2f-87ea-4a9e33d056bf /dev/disk/by-diskseq/9-part2 /dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:0:0-part2 Size:2147483648 UUID: Serial: Type:part Rotational:true Readonly:false Partitions:[] Filesystem:ext4 Mountpoint:boot Vendor:VMware Model:Virtual_disk WWN: WWNVendorExtension: Empty:false CephVolumeData: RealPath:/dev/sda2 KernelName:sda2 Encrypted:false}
+2026-05-26 10:13:16.853558 D | inventory: &{Name:sda3 Parent:sda HasChildren:false DevLinks:/dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:0:0-part3 /dev/disk/by-diskseq/9-part3 /dev/disk/by-partuuid/66f44dc4-0100-4a19-b677-df8a50c2f627 /dev/disk/by-id/lvm-pv-uuid-ggQhbQ-i1cG-5Rt8-yD20-MptC-roJ0-Dm26t1 Size:158910644224 UUID: Serial: Type:part Rotational:true Readonly:false Partitions:[] Filesystem:LVM2_member Mountpoint: Vendor:VMware Model:Virtual_disk WWN: WWNVendorExtension: Empty:false CephVolumeData: RealPath:/dev/sda3 KernelName:sda3 Encrypted:false}
+2026-05-26 10:13:16.853564 D | inventory: &{Name:sdb Parent: HasChildren:false DevLinks:/dev/disk/by-diskseq/10 /dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:1:0 Size:214748364800 UUID: Serial: Type:disk Rotational:true Readonly:false Partitions:[] Filesystem: Mountpoint: Vendor:VMware Model:Virtual_disk WWN: WWNVendorExtension: Empty:false CephVolumeData: RealPath:/dev/sdb KernelName:sdb Encrypted:false}
+2026-05-26 10:13:16.853569 D | inventory: &{Name:dm-0 Parent: HasChildren:false DevLinks:/dev/disk/by-id/dm-uuid-LVM-nuWZ0B46FqOGCVinQN0FoPB94k7s7GU3NvvjvtWUud9v3QhbkBvZjteqpbk2Ge1e /dev/ubuntu-vg/ubuntu-lv /dev/disk/by-id/dm-name-ubuntu--vg-ubuntu--lv /dev/disk/by-dname/ubuntu--vg-ubuntu--lv /dev/mapper/ubuntu--vg-ubuntu--lv /dev/disk/by-uuid/61db3a8e-7767-45e1-86b0-d28ceb144559 Size:158909595648 UUID: Serial: Type:lvm Rotational:true Readonly:false Partitions:[] Filesystem:ext4 Mountpoint:rootfs Vendor: Model: WWN: WWNVendorExtension: Empty:false CephVolumeData: RealPath:/dev/mapper/ubuntu--vg-ubuntu--lv KernelName:dm-0 Encrypted:false}
+2026-05-26 10:13:16.853572 I | cephosd: creating and starting the osds
+2026-05-26 10:13:16.853578 D | cephosd: desiredDevices are [{Name:sdb OSDsPerDevice:1 MetadataDevice: DatabaseSizeMB:0 DeviceClass: InitialWeight: IsFilter:false IsDevicePathFilter:false}]
+2026-05-26 10:13:16.853580 D | cephosd: context.Devices are:
+2026-05-26 10:13:16.853813 D | cephosd: &{Name:sda1 Parent:sda HasChildren:false DevLinks:/dev/disk/by-diskseq/9-part1 /dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:0:0-part1 /dev/disk/by-partuuid/1967d905-925e-4154-ad9d-357e5ae2dcfe Size:1048576 UUID: Serial: Type:part Rotational:true Readonly:false Partitions:[] Filesystem: Mountpoint: Vendor:VMware Model:Virtual_disk WWN: WWNVendorExtension: Empty:false CephVolumeData: RealPath:/dev/sda1 KernelName:sda1 Encrypted:false}
+2026-05-26 10:13:16.853822 D | cephosd: &{Name:sda2 Parent:sda HasChildren:false DevLinks:/dev/disk/by-partuuid/9ae5b76c-23a6-41e5-ba64-d86ab5abcc3a /dev/disk/by-uuid/0c8eac29-ba7a-4e2f-87ea-4a9e33d056bf /dev/disk/by-diskseq/9-part2 /dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:0:0-part2 Size:2147483648 UUID: Serial: Type:part Rotational:true Readonly:false Partitions:[] Filesystem:ext4 Mountpoint:boot Vendor:VMware Model:Virtual_disk WWN: WWNVendorExtension: Empty:false CephVolumeData: RealPath:/dev/sda2 KernelName:sda2 Encrypted:false}
+2026-05-26 10:13:16.853826 D | cephosd: &{Name:sda3 Parent:sda HasChildren:false DevLinks:/dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:0:0-part3 /dev/disk/by-diskseq/9-part3 /dev/disk/by-partuuid/66f44dc4-0100-4a19-b677-df8a50c2f627 /dev/disk/by-id/lvm-pv-uuid-ggQhbQ-i1cG-5Rt8-yD20-MptC-roJ0-Dm26t1 Size:158910644224 UUID: Serial: Type:part Rotational:true Readonly:false Partitions:[] Filesystem:LVM2_member Mountpoint: Vendor:VMware Model:Virtual_disk WWN: WWNVendorExtension: Empty:false CephVolumeData: RealPath:/dev/sda3 KernelName:sda3 Encrypted:false}
+2026-05-26 10:13:16.853832 D | cephosd: &{Name:sdb Parent: HasChildren:false DevLinks:/dev/disk/by-diskseq/10 /dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:1:0 Size:214748364800 UUID: Serial: Type:disk Rotational:true Readonly:false Partitions:[] Filesystem: Mountpoint: Vendor:VMware Model:Virtual_disk WWN: WWNVendorExtension: Empty:false CephVolumeData: RealPath:/dev/sdb KernelName:sdb Encrypted:false}
+2026-05-26 10:13:16.853839 D | cephosd: &{Name:dm-0 Parent: HasChildren:false DevLinks:/dev/disk/by-id/dm-uuid-LVM-nuWZ0B46FqOGCVinQN0FoPB94k7s7GU3NvvjvtWUud9v3QhbkBvZjteqpbk2Ge1e /dev/ubuntu-vg/ubuntu-lv /dev/disk/by-id/dm-name-ubuntu--vg-ubuntu--lv /dev/disk/by-dname/ubuntu--vg-ubuntu--lv /dev/mapper/ubuntu--vg-ubuntu--lv /dev/disk/by-uuid/61db3a8e-7767-45e1-86b0-d28ceb144559 Size:158909595648 UUID: Serial: Type:lvm Rotational:true Readonly:false Partitions:[] Filesystem:ext4 Mountpoint:rootfs Vendor: Model: WWN: WWNVendorExtension: Empty:false CephVolumeData: RealPath:/dev/mapper/ubuntu--vg-ubuntu--lv KernelName:dm-0 Encrypted:false}
+2026-05-26 10:13:16.853845 I | cephosd: old lsblk can't detect bluestore signature, so try to detect here
+2026-05-26 10:13:16.854082 D | exec: Running command: udevadm info --query=property /dev/sda1
+2026-05-26 10:13:16.858115 D | sys: udevadm info output: "DEVPATH=/devices/pci0000:00/0000:00:15.0/0000:03:00.0/host2/target2:0:0/2:0:0:0/block/sda/sda1\nDEVNAME=/dev/sda1\nDEVTYPE=partition\nDISKSEQ=9\nPARTN=1\nMAJOR=8\nMINOR=1\nSUBSYSTEM=block\nUSEC_INITIALIZED=820856\nID_SCSI=1\nSCSI_TPGS=0\nSCSI_TYPE=disk\nSCSI_VENDOR=VMware\nSCSI_VENDOR_ENC=VMware\\x20\\x20\nSCSI_MODEL=Virtual_disk\nSCSI_MODEL_ENC=Virtual\\x20disk\\x20\\x20\\x20\\x20\nSCSI_REVISION=2.0\nID_VENDOR=VMware\nID_VENDOR_ENC=VMware\\x20\\x20\nID_MODEL=Virtual_disk\nID_MODEL_ENC=Virtual\\x20disk\\x20\\x20\\x20\\x20\nID_REVISION=2.0\nID_TYPE=disk\nDM_MULTIPATH_DEVICE_PATH=0\nID_SCSI_INQUIRY=1\nID_BUS=scsi\nID_PATH=pci-0000:03:00.0-scsi-0:0:0:0\nID_PATH_TAG=pci-0000_03_00_0-scsi-0_0_0_0\nID_PART_TABLE_UUID=58d0c8f3-a108-4332-88f1-5e907e46f52a\nID_PART_TABLE_TYPE=gpt\nID_PART_ENTRY_SCHEME=gpt\nID_PART_ENTRY_UUID=1967d905-925e-4154-ad9d-357e5ae2dcfe\nID_PART_ENTRY_TYPE=21686148-6449-6e6f-744e-656564454649\nID_PART_ENTRY_NUMBER=1\nID_PART_ENTRY_OFFSET=2048\nID_PART_ENTRY_SIZE=2048\nID_PART_ENTRY_DISK=8:0\nUDISKS_IGNORE=1\nDEVLINKS=/dev/disk/by-diskseq/9-part1 /dev/disk/by-partuuid/1967d905-925e-4154-ad9d-357e5ae2dcfe /dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:0:0-part1\nTAGS=:systemd:\nCURRENT_TAGS=:systemd:"
+2026-05-26 10:13:16.858134 D | exec: Running command: lsblk /dev/sda1 --bytes --nodeps --pairs --paths --output SIZE,ROTA,RO,TYPE,PKNAME,NAME,KNAME,MOUNTPOINT,FSTYPE
+2026-05-26 10:13:16.861463 D | sys: lsblk output: "SIZE=\"1048576\" ROTA=\"1\" RO=\"0\" TYPE=\"part\" PKNAME=\"/dev/sda\" NAME=\"/dev/sda1\" KNAME=\"/dev/sda1\" MOUNTPOINT=\"\" FSTYPE=\"\""
+2026-05-26 10:13:16.861480 D | exec: Running command: ceph-volume inventory --format json /dev/sda1
+2026-05-26 10:13:17.085482 I | cephosd: skipping device "sda1": ["Insufficient space (<5GB)"].
+2026-05-26 10:13:17.085500 I | cephosd: skipping device "sda2" with mountpoint "boot"
+2026-05-26 10:13:17.085504 I | cephosd: skipping device "sda3" because it contains a filesystem "LVM2_member"
+2026-05-26 10:13:17.085506 I | cephosd: old lsblk can't detect bluestore signature, so try to detect here
+2026-05-26 10:13:17.085744 D | exec: Running command: lsblk /dev/sdb --bytes --nodeps --pairs --paths --output SIZE,ROTA,RO,TYPE,PKNAME,NAME,KNAME,MOUNTPOINT,FSTYPE
+2026-05-26 10:13:17.088079 D | sys: lsblk output: "SIZE=\"214748364800\" ROTA=\"1\" RO=\"0\" TYPE=\"disk\" PKNAME=\"\" NAME=\"/dev/sdb\" KNAME=\"/dev/sdb\" MOUNTPOINT=\"\" FSTYPE=\"\""
+2026-05-26 10:13:17.088100 D | exec: Running command: ceph-volume inventory --format json /dev/sdb
+2026-05-26 10:13:17.447890 I | cephosd: device "sdb" is available.
+2026-05-26 10:13:17.447905 I | cephosd: "sdb" found in the desired devices
+2026-05-26 10:13:17.447909 I | cephosd: device "sdb" is selected by the device filter/name "sdb"
+2026-05-26 10:13:17.447916 I | cephosd: skipping device "dm-0" with mountpoint "rootfs"
+2026-05-26 10:13:17.453635 I | cephosd: configuring osd devices: {"Entries":{"sdb":{"Data":-1,"Metadata":null,"Config":{"Name":"sdb","OSDsPerDevice":1,"MetadataDevice":"","DatabaseSizeMB":0,"DeviceClass":"hdd","InitialWeight":"","IsFilter":false,"IsDevicePathFilter":false},"PersistentDevicePaths":["/dev/disk/by-diskseq/10","/dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:1:0"],"DeviceInfo":{"name":"sdb","parent":"","hasChildren":false,"devLinks":"/dev/disk/by-diskseq/10 /dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:1:0","size":214748364800,"uuid":"","serial":"","type":"disk","rotational":true,"readOnly":false,"Partitions":null,"filesystem":"","mountpoint":"","vendor":"VMware","model":"Virtual_disk","wwn":"","wwnVendorExtension":"","empty":false,"real-path":"/dev/sdb","kernel-name":"sdb"},"RestoreOSD":false}}}
+2026-05-26 10:13:17.453650 I | cephclient: getting or creating ceph auth key "client.bootstrap-osd"
+2026-05-26 10:13:17.453658 D | exec: Running command: ceph auth get-or-create-key client.bootstrap-osd mon allow profile bootstrap-osd --connect-timeout=15 --cluster=rook-ceph --conf=/var/lib/rook/rook-ceph/rook-ceph.config --name=client.admin --keyring=/var/lib/rook/rook-ceph/client.admin.keyring --format json
+2026-05-26 10:13:17.856509 I | cephosd: configuring new raw device "/dev/sdb"
+2026-05-26 10:13:17.856527 D | exec: Running command: stdbuf -oL ceph-volume raw prepare --bluestore --data /dev/sdb --crush-device-class hdd
+2026-05-26 10:13:18.190031 I | cephosd: --> Raw device /dev/sdb is already prepared.
+2026-05-26 10:13:18.191136 D | exec: Running command: stdbuf -oL ceph-volume --log-path /tmp/ceph-log lvm list  --format json
+2026-05-26 10:13:18.378621 D | cephosd: {}
+2026-05-26 10:13:18.378644 I | cephosd: 0 ceph-volume lvm osd devices configured on this node
+2026-05-26 10:13:18.378666 D | exec: Running command: stdbuf -oL ceph-volume --log-path /tmp/ceph-log raw list --format json
+2026-05-26 10:13:18.931765 D | cephosd: {
+    "6c630a83-cb22-4930-8e23-e677eb172ace": {
+        "ceph_fsid": "a43a202c-fa28-456c-8a34-2a8a64e6e9e4",
+        "device": "/dev/sdb",
+        "osd_id": 1,
+        "osd_uuid": "6c630a83-cb22-4930-8e23-e677eb172ace",
+        "type": "bluestore"
+    }
+}
+2026-05-26 10:13:18.931939 D | exec: Running command: lsblk /dev/sdb --bytes --nodeps --pairs --paths --output SIZE,ROTA,RO,TYPE,PKNAME,NAME,KNAME,MOUNTPOINT,FSTYPE
+2026-05-26 10:13:18.934279 D | sys: lsblk output: "SIZE=\"214748364800\" ROTA=\"1\" RO=\"0\" TYPE=\"disk\" PKNAME=\"\" NAME=\"/dev/sdb\" KNAME=\"/dev/sdb\" MOUNTPOINT=\"\" FSTYPE=\"\""
+2026-05-26 10:13:18.934306 D | exec: Running command: sgdisk --print /dev/sdb
+2026-05-26 10:13:18.936635 W | inventory: uuid not found for device /dev/sdb. output=Creating new GPT entries in memory.
+Disk /dev/sdb: 419430400 sectors, 200.0 GiB
+Model: Virtual disk    
+Sector size (logical/physical): 512/512 bytes
+Disk identifier (GUID): 555C9444-0277-4081-9CB9-1341AFB39477
+Partition table holds up to 128 entries
+Main partition table begins at sector 2 and ends at sector 33
+First usable sector is 34, last usable sector is 419430366
+Partitions will be aligned on 2048-sector boundaries
+Total free space is 419430333 sectors (200.0 GiB)
+
+Number  Start (sector)    End (sector)  Size       Code  Name
+2026-05-26 10:13:18.936650 I | cephosd: setting device type "hdd" for device "/dev/sdb"
+2026-05-26 10:13:18.936654 I | cephosd: setting device class "hdd" for device "/dev/sdb"
+2026-05-26 10:13:18.936658 I | cephosd: 1 ceph-volume raw osd devices configured on this node
+2026-05-26 10:13:18.936679 I | cephosd: devices = [{ID:1 Cluster:ceph UUID:6c630a83-cb22-4930-8e23-e677eb172ace DevicePartUUID: DeviceClass:hdd BlockPath:/dev/sdb MetadataPath: WalPath: SkipLVRelease:true Location:root=default host=sevtdpassywn01 LVBackedPV:false CVMode:raw Store:bluestore TopologyAffinity: Encrypted:false ExportService:false NodeName: PVCName: DeviceType:hdd CephxStatus:{KeyGeneration:0 KeyCephVersion:}}]
