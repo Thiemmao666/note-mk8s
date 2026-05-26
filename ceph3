@@ -1,0 +1,139 @@
+sevtmcc@sevtdpassymn01:~$ kex rook-ceph-tools-758b5597fb-bvmpc -- bash
+bash-5.1$ ceph osd tree
+ID   CLASS  WEIGHT   TYPE NAME                STATUS  REWEIGHT  PRI-AFF
+ -1         0.19530  root default                                      
+-10         0.19530      host sevtdpassymn03                           
+  2    ssd  0.19530          osd.2                up   1.00000  1.00000
+bash-5.1$ ceph osd status
+ID  HOST             USED  AVAIL  WR OPS  WR DATA  RD OPS  RD DATA  STATE      
+ 2  sevtdpassymn03  45.6G   154G      0     1141       2     1247   exists,up  
+bash-5.1$ ceph osd dump  
+epoch 902
+fsid a43a202c-fa28-456c-8a34-2a8a64e6e9e4
+created 2026-03-01T03:41:20.557787+0000
+modified 2026-05-26T10:12:42.978515+0000
+flags sortbitwise,recovery_deletes,purged_snapdirs,pglog_hardlimit
+crush_version 28
+full_ratio 0.95
+backfillfull_ratio 0.9
+nearfull_ratio 0.85
+require_min_compat_client luminous
+min_compat_client jewel
+require_osd_release tentacle
+stretch_mode_enabled false
+pool 1 '.mgr' replicated size 1 min_size 1 crush_rule 0 object_hash rjenkins pg_num 1 pgp_num 1 autoscale_mode on last_change 614 flags hashpspool stripe_width 0 pg_num_max 32 pg_num_min 1 application mgr read_balance_score 1.00
+pool 6 'mccfs-metadata' replicated size 2 min_size 1 crush_rule 3 object_hash rjenkins pg_num 16 pgp_num 16 autoscale_mode on last_change 901 lfor 0/0/98 flags hashpspool stripe_width 0 compression_mode none pg_autoscale_bias 4 pg_num_min 16 recovery_priority 5 application cephfs read_balance_score 1.00
+pool 7 'mccfs-mccpool' replicated size 2 min_size 1 crush_rule 4 object_hash rjenkins pg_num 32 pgp_num 32 autoscale_mode on last_change 902 lfor 0/863/861 flags hashpspool stripe_width 0 compression_mode none application cephfs read_balance_score 1.00
+max_osd 3
+osd.2 up   in  weight 1 up_from 893 up_thru 893 down_at 890 last_clean_interval [885,890) [v2:10.244.2.153:6800/4251672800,v1:10.244.2.153:6801/4251672800] [v2:10.244.2.153:6802/4251672800,v1:10.244.2.153:6803/4251672800] exists,up c8d2c155-e8ad-4efb-9b74-6db5daac4955
+bash-5.1$ 
+
+  sevtmcc@sevtdpassymn01:~/rook-ceph-mainfest$ kl rook-ceph-osd-1-56d6854c47-46lmz --all-containers
+inferring bluefs devices from bluestore path
+2026-05-26T10:24:06.823+0000 7c14d7f5cc00 -1 bluestore(/var/lib/ceph/osd/ceph-1) _check_main_bdev_label not all labels read properly, 4!=3
+/ceph/rpmbuild/BUILD/ceph-20.2.0/src/os/bluestore/BlueStore.cc: In function 'int BlueStore::expand_devices(std::ostream&)' thread 7c14d7f5cc00 time 2026-05-26T10:24:06.838929+0000
+/ceph/rpmbuild/BUILD/ceph-20.2.0/src/os/bluestore/BlueStore.cc: 8929: FAILED ceph_assert(r == 0)
+ ceph version 20.2.0 (69f84cc2651aa259a15bc192ddaabd3baba07489) tentacle (stable - RelWithDebInfo)
+ 1: (ceph::__ceph_assert_fail(char const*, char const*, int, char const*)+0x12f) [0x7c14d8fca8f8]
+ 2: ceph-bluestore-tool(+0x191a6f) [0x55bf1ce62a6f]
+ 3: main()
+ 4: /lib64/libc.so.6(+0x2a610) [0x7c14d83c2610]
+ 5: __libc_start_main()
+ 6: _start()
+*** Caught signal (Aborted) **
+ in thread 7c14d7f5cc00 thread_name:ceph-bluestore-
+2026-05-26T10:24:06.838+0000 7c14d7f5cc00 -1 /ceph/rpmbuild/BUILD/ceph-20.2.0/src/os/bluestore/BlueStore.cc: In function 'int BlueStore::expand_devices(std::ostream&)' thread 7c14d7f5cc00 time 2026-05-26T10:24:06.838929+0000
+/ceph/rpmbuild/BUILD/ceph-20.2.0/src/os/bluestore/BlueStore.cc: 8929: FAILED ceph_assert(r == 0)
+
+ ceph version 20.2.0 (69f84cc2651aa259a15bc192ddaabd3baba07489) tentacle (stable - RelWithDebInfo)
+ 1: (ceph::__ceph_assert_fail(char const*, char const*, int, char const*)+0x12f) [0x7c14d8fca8f8]
+ 2: ceph-bluestore-tool(+0x191a6f) [0x55bf1ce62a6f]
+ 3: main()
+ 4: /lib64/libc.so.6(+0x2a610) [0x7c14d83c2610]
+ 5: __libc_start_main()
+ 6: _start()
+
+ ceph version 20.2.0 (69f84cc2651aa259a15bc192ddaabd3baba07489) tentacle (stable - RelWithDebInfo)
+ 1: /lib64/libc.so.6(+0x3fc30) [0x7c14d83d7c30]
+ 2: /lib64/libc.so.6(+0x8d03c) [0x7c14d842503c]
+ 3: raise()
+ 4: abort()
+ 5: (ceph::__ceph_assert_fail(char const*, char const*, int, char const*)+0x18e) [0x7c14d8fca957]
+ 6: ceph-bluestore-tool(+0x191a6f) [0x55bf1ce62a6f]
+ 7: main()
+ 8: /lib64/libc.so.6(+0x2a610) [0x7c14d83c2610]
+ 9: __libc_start_main()
+ 10: _start()
+2026-05-26T10:24:06.840+0000 7c14d7f5cc00 -1 *** Caught signal (Aborted) **
+ in thread 7c14d7f5cc00 thread_name:ceph-bluestore-
+
+ ceph version 20.2.0 (69f84cc2651aa259a15bc192ddaabd3baba07489) tentacle (stable - RelWithDebInfo)
+ 1: /lib64/libc.so.6(+0x3fc30) [0x7c14d83d7c30]
+ 2: /lib64/libc.so.6(+0x8d03c) [0x7c14d842503c]
+ 3: raise()
+ 4: abort()
+ 5: (ceph::__ceph_assert_fail(char const*, char const*, int, char const*)+0x18e) [0x7c14d8fca957]
+ 6: ceph-bluestore-tool(+0x191a6f) [0x55bf1ce62a6f]
+ 7: main()
+ 8: /lib64/libc.so.6(+0x2a610) [0x7c14d83c2610]
+ 9: __libc_start_main()
+ 10: _start()
+ NOTE: a copy of the executable, or `objdump -rdS <executable>` is needed to interpret this.
+
+   -43> 2026-05-26T10:24:06.823+0000 7c14d7f5cc00 -1 bluestore(/var/lib/ceph/osd/ceph-1) _check_main_bdev_label not all labels read properly, 4!=3
+   -42> 2026-05-26T10:24:06.838+0000 7c14d7f5cc00 -1 /ceph/rpmbuild/BUILD/ceph-20.2.0/src/os/bluestore/BlueStore.cc: In function 'int BlueStore::expand_devices(std::ostream&)' thread 7c14d7f5cc00 time 2026-05-26T10:24:06.838929+0000
+/ceph/rpmbuild/BUILD/ceph-20.2.0/src/os/bluestore/BlueStore.cc: 8929: FAILED ceph_assert(r == 0)
+
+ ceph version 20.2.0 (69f84cc2651aa259a15bc192ddaabd3baba07489) tentacle (stable - RelWithDebInfo)
+ 1: (ceph::__ceph_assert_fail(char const*, char const*, int, char const*)+0x12f) [0x7c14d8fca8f8]
+ 2: ceph-bluestore-tool(+0x191a6f) [0x55bf1ce62a6f]
+ 3: main()
+ 4: /lib64/libc.so.6(+0x2a610) [0x7c14d83c2610]
+ 5: __libc_start_main()
+ 6: _start()
+
+   -41> 2026-05-26T10:24:06.840+0000 7c14d7f5cc00 -1 *** Caught signal (Aborted) **
+ in thread 7c14d7f5cc00 thread_name:ceph-bluestore-
+
+ ceph version 20.2.0 (69f84cc2651aa259a15bc192ddaabd3baba07489) tentacle (stable - RelWithDebInfo)
+ 1: /lib64/libc.so.6(+0x3fc30) [0x7c14d83d7c30]
+ 2: /lib64/libc.so.6(+0x8d03c) [0x7c14d842503c]
+ 3: raise()
+ 4: abort()
+ 5: (ceph::__ceph_assert_fail(char const*, char const*, int, char const*)+0x18e) [0x7c14d8fca957]
+ 6: ceph-bluestore-tool(+0x191a6f) [0x55bf1ce62a6f]
+ 7: main()
+ 8: /lib64/libc.so.6(+0x2a610) [0x7c14d83c2610]
+ 9: __libc_start_main()
+ 10: _start()
+ NOTE: a copy of the executable, or `objdump -rdS <executable>` is needed to interpret this.
+
+    -3> 2026-05-26T10:24:06.823+0000 7c14d7f5cc00 -1 bluestore(/var/lib/ceph/osd/ceph-1) _check_main_bdev_label not all labels read properly, 4!=3
+    -1> 2026-05-26T10:24:06.838+0000 7c14d7f5cc00 -1 /ceph/rpmbuild/BUILD/ceph-20.2.0/src/os/bluestore/BlueStore.cc: In function 'int BlueStore::expand_devices(std::ostream&)' thread 7c14d7f5cc00 time 2026-05-26T10:24:06.838929+0000
+/ceph/rpmbuild/BUILD/ceph-20.2.0/src/os/bluestore/BlueStore.cc: 8929: FAILED ceph_assert(r == 0)
+
+ ceph version 20.2.0 (69f84cc2651aa259a15bc192ddaabd3baba07489) tentacle (stable - RelWithDebInfo)
+ 1: (ceph::__ceph_assert_fail(char const*, char const*, int, char const*)+0x12f) [0x7c14d8fca8f8]
+ 2: ceph-bluestore-tool(+0x191a6f) [0x55bf1ce62a6f]
+ 3: main()
+ 4: /lib64/libc.so.6(+0x2a610) [0x7c14d83c2610]
+ 5: __libc_start_main()
+ 6: _start()
+
+     0> 2026-05-26T10:24:06.840+0000 7c14d7f5cc00 -1 *** Caught signal (Aborted) **
+ in thread 7c14d7f5cc00 thread_name:ceph-bluestore-
+
+ ceph version 20.2.0 (69f84cc2651aa259a15bc192ddaabd3baba07489) tentacle (stable - RelWithDebInfo)
+ 1: /lib64/libc.so.6(+0x3fc30) [0x7c14d83d7c30]
+ 2: /lib64/libc.so.6(+0x8d03c) [0x7c14d842503c]
+ 3: raise()
+ 4: abort()
+ 5: (ceph::__ceph_assert_fail(char const*, char const*, int, char const*)+0x18e) [0x7c14d8fca957]
+ 6: ceph-bluestore-tool(+0x191a6f) [0x55bf1ce62a6f]
+ 7: main()
+ 8: /lib64/libc.so.6(+0x2a610) [0x7c14d83c2610]
+ 9: __libc_start_main()
+ 10: _start()
+ NOTE: a copy of the executable, or `objdump -rdS <executable>` is needed to interpret this.
+
+Error from server (BadRequest): container "cephx-keyring-update" in pod "rook-ceph-osd-1-56d6854c47-46lmz" is waiting to start: PodInitializing
