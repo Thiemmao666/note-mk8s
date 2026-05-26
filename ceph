@@ -23,6 +23,46 @@ rook-ceph-osd-0-6669f464df-8wlmk                           0/2     Init:CrashLoo
 rook-ceph-osd-1-56d6854c47-2hwkt                           0/2     Init:Error              7 (5m54s ago)   11m   10.244.7.28      sevtdpassywn01   <none>           <none>
 rook-ceph-osd-2-78746dd98d-dr6n6                           2/2     Running                 0               84d   10.244.2.28      sevtdpassymn03   <none>           <none>
 
+
+026-05-26 08:20:05.363254 I | cephosd: configuring osd devices: {"Entries":{"sdb":{"Data":-1,"Metadata":null,"Config":{"Name":"sdb","OSDsPerDevice":1,"MetadataDevice":"","DatabaseSizeMB":0,"DeviceClass":"ssd","InitialWeight":"","IsFilter":false,"IsDevicePathFilter":false},"PersistentDevicePaths":["/dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:1:0","/dev/disk/by-diskseq/10"],"DeviceInfo":{"name":"sdb","parent":"","hasChildren":false,"devLinks":"/dev/disk/by-path/pci-0000:03:00.0-scsi-0:0:1:0 /dev/disk/by-diskseq/10","size":214748364800,"uuid":"","serial":"","type":"disk","rotational":true,"readOnly":false,"Partitions":null,"filesystem":"","mountpoint":"","vendor":"VMware","model":"Virtual_disk","wwn":"","wwnVendorExtension":"","empty":false,"real-path":"/dev/sdb","kernel-name":"sdb"},"RestoreOSD":false}}}
+2026-05-26 08:20:05.363268 I | cephclient: getting or creating ceph auth key "client.bootstrap-osd"
+2026-05-26 08:20:05.363276 D | exec: Running command: ceph auth get-or-create-key client.bootstrap-osd mon allow profile bootstrap-osd --connect-timeout=15 --cluster=rook-ceph --conf=/var/lib/rook/rook-ceph/rook-ceph.config --name=client.admin --keyring=/var/lib/rook/rook-ceph/client.admin.keyring --format json
+2026-05-26 08:20:05.707526 I | cephosd: configuring new raw device "/dev/sdb"
+2026-05-26 08:20:05.707544 D | exec: Running command: stdbuf -oL ceph-volume raw prepare --bluestore --data /dev/sdb --crush-device-class ssd
+2026-05-26 08:20:06.079078 I | cephosd: --> Raw device /dev/sdb is already prepared.
+2026-05-26 08:20:06.079921 D | exec: Running command: stdbuf -oL ceph-volume --log-path /tmp/ceph-log lvm list  --format json
+2026-05-26 08:20:06.272467 D | cephosd: {}
+2026-05-26 08:20:06.272491 I | cephosd: 0 ceph-volume lvm osd devices configured on this node
+2026-05-26 08:20:06.272510 D | exec: Running command: stdbuf -oL ceph-volume --log-path /tmp/ceph-log raw list --format json
+2026-05-26 08:20:06.789592 D | cephosd: {
+    "6c630a83-cb22-4930-8e23-e677eb172ace": {
+        "ceph_fsid": "a43a202c-fa28-456c-8a34-2a8a64e6e9e4",
+        "device": "/dev/sdb",
+        "osd_id": 1,
+        "osd_uuid": "6c630a83-cb22-4930-8e23-e677eb172ace",
+        "type": "bluestore"
+    }
+}
+2026-05-26 08:20:06.789654 D | exec: Running command: lsblk /dev/sdb --bytes --nodeps --pairs --paths --output SIZE,ROTA,RO,TYPE,PKNAME,NAME,KNAME,MOUNTPOINT,FSTYPE
+2026-05-26 08:20:06.792288 D | sys: lsblk output: "SIZE=\"214748364800\" ROTA=\"1\" RO=\"0\" TYPE=\"disk\" PKNAME=\"\" NAME=\"/dev/sdb\" KNAME=\"/dev/sdb\" MOUNTPOINT=\"\" FSTYPE=\"\""
+2026-05-26 08:20:06.792323 D | exec: Running command: sgdisk --print /dev/sdb
+2026-05-26 08:20:06.795910 W | inventory: uuid not found for device /dev/sdb. output=Creating new GPT entries in memory.
+Disk /dev/sdb: 419430400 sectors, 200.0 GiB
+Model: Virtual disk    
+Sector size (logical/physical): 512/512 bytes
+Disk identifier (GUID): E5431505-F9AB-41E0-991A-1B95CD1F1803
+Partition table holds up to 128 entries
+Main partition table begins at sector 2 and ends at sector 33
+First usable sector is 34, last usable sector is 419430366
+Partitions will be aligned on 2048-sector boundaries
+Total free space is 419430333 sectors (200.0 GiB)
+
+Number  Start (sector)    End (sector)  Size       Code  Name
+2026-05-26 08:20:06.795935 I | cephosd: setting device type "hdd" for device "/dev/sdb"
+2026-05-26 08:20:06.795939 I | cephosd: setting device class "hdd" for device "/dev/sdb"
+2026-05-26 08:20:06.795944 I | cephosd: 1 ceph-volume raw osd devices configured on this node
+2026-05-26 08:20:06.795968 I | cephosd: devices = [{ID:1 Cluster:ceph UUID:6c630a83-cb22-4930-8e23-e677eb172ace DevicePartUUID: DeviceClass:hdd BlockPath:/dev/sdb MetadataPath: WalPath: SkipLVRelease:true Location:root=default host=sevtdpassywn01 LVBackedPV:false CVMode:raw Store:bluestore TopologyAffinity: Encrypted:false ExportService:false NodeName: PVCName: DeviceType:hdd CephxStatus:{KeyGeneration:0 KeyCephVersion:}}]
+
 Events:
   Type     Reason     Age                  From               Message
   ----     ------     ----                 ----               -------
