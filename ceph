@@ -11,42 +11,9 @@ ID   CLASS  WEIGHT   TYPE NAME                STATUS  REWEIGHT  PRI-AFF
 2026-05-26 07:48:15.797668 W | disruption: failed to get the node name for the OSD 1
 2026-05-26 07:48:15.797804 W | disruption: failed to get the node name for the OSD 0
 2026-05-26 07:48:16.157862 I | disruption: OSD(s) [1 0] are down and PGs are not clean. PGs Status: "cluster is not fully clean. PGs: [{StateName:active+undersized+degraded Count:144} {StateName:undersized+degraded+peered Count:1}]"
-2026-05-26 07:48:16.157877 I | disruption: OSD failure Domains : ["sevtdpassymn03"]
-2026-05-26 07:48:16.157880 I | disruption: Draining Failure Domain: "sevtdpassywn01"
-2026-05-26 07:48:16.157882 I | disruption: Set noout on draining Failure Domain: ""
-2026-05-26 07:48:16.439927 I | disruption: reconciling osd pdb controller
-2026-05-26 07:48:16.852473 W | disruption: failed to get the node name for the OSD 1
-2026-05-26 07:48:16.852539 W | disruption: failed to get the node name for the OSD 0
-2026-05-26 07:48:17.290272 I | disruption: OSD(s) [1 0] are down and PGs are not clean. PGs Status: "cluster is not fully clean. PGs: [{StateName:active+undersized+degraded Count:144} {StateName:undersized+degraded+peered Count:1}]"
-2026-05-26 07:48:17.290300 I | disruption: OSD failure Domains : ["sevtdpassymn03"]
-2026-05-26 07:48:17.290303 I | disruption: Draining Failure Domain: "sevtdpassywn01"
-2026-05-26 07:48:17.290306 I | disruption: Set noout on draining Failure Domain: ""
-2026-05-26 07:48:17.566837 I | disruption: reconciling osd pdb controller
-2026-05-26 07:48:31.712434 W | disruption: failed to get the node name for the OSD 1
-2026-05-26 07:48:31.712449 W | disruption: failed to get the node name for the OSD 0
-2026-05-26 07:48:32.076552 I | disruption: OSD(s) [1 0] are down and PGs are not clean. PGs Status: "cluster is not fully clean. PGs: [{StateName:active+undersized+degraded Count:144} {StateName:undersized+degraded+peered Count:1}]"
-2026-05-26 07:48:32.076566 I | disruption: OSD failure Domains : ["sevtdpassymn03"]
-2026-05-26 07:48:32.076568 I | disruption: Draining Failure Domain: "sevtdpassywn01"
-2026-05-26 07:48:32.076570 I | disruption: Set noout on draining Failure Domain: ""
-2026-05-26 07:48:32.352823 I | disruption: reconciling osd pdb controller
-2026-05-26 07:48:32.851924 W | disruption: failed to get the node name for the OSD 1
-2026-05-26 07:48:32.851943 W | disruption: failed to get the node name for the OSD 0
-2026-05-26 07:48:33.193546 I | disruption: OSD(s) [1 0] are down and PGs are not clean. PGs Status: "cluster is not fully clean. PGs: [{StateName:active+undersized+degraded Count:144} {StateName:undersized+degraded+peered Count:1}]"
-2026-05-26 07:48:33.193561 I | disruption: OSD failure Domains : ["sevtdpassymn03"]
-2026-05-26 07:48:33.193564 I | disruption: Draining Failure Domain: "sevtdpassywn01"
-2026-05-26 07:48:33.193566 I | disruption: Set noout on draining Failure Domain: ""
-2026-05-26 07:48:33.487790 I | disruption: reconciling osd pdb controller
-2026-05-26 07:48:47.620874 W | disruption: failed to get the node name for the OSD 0
-2026-05-26 07:48:47.620957 W | disruption: failed to get the node name for the OSD 1
-2026-05-26 07:48:47.967864 I | disruption: OSD(s) [0 1] are down and PGs are not clean. PGs Status: "cluster is not fully clean. PGs: [{StateName:active+undersized+degraded Count:144} {StateName:undersized+degraded+peered Count:1}]"
-2026-05-26 07:48:47.967879 I | disruption: OSD failure Domains : ["sevtdpassymn03"]
-2026-05-26 07:48:47.967882 I | disruption: Draining Failure Domain: "sevtdpassywn01"
-2026-05-26 07:48:47.967885 I | disruption: Set noout on draining Failure Domain: ""
-2026-05-26 07:48:48.253120 I | disruption: reconciling osd pdb controller
-2026-05-26 07:48:48.787445 W | disruption: failed to get the node name for the OSD 1
-2026-05-26 07:48:48.787460 W | disruption: failed to get the node name for the OSD 0
-2026-05-26 07:48:49.129473 I | disruption: OSD(s) [1 0] are down and PGs are not clean. PGs Status: "cluster is not fully clean. PGs: [{StateName:active+undersized+degraded Count:144} {StateName:undersized+degraded+peered Count:1}]"
-2026-05-26 07:48:49.129488 I | disruption: OSD failure Domains : ["sevtdpassymn03"]
-2026-05-26 07:48:49.129491 I | disruption: Draining Failure Domain: "sevtdpassywn01"
-2026-05-26 07:48:49.129493 I | disruption: Set noout on draining Failure Domain: ""
-2026-05-26 07:48:49.415667 I | disruption: reconciling osd pdb controller
+2bash-5.1$ ceph osd pool ls detail
+pool 1 '.mgr' replicated size 3 min_size 2 crush_rule 0 object_hash rjenkins pg_num 1 pgp_num 1 autoscale_mode on last_change 28 flags hashpspool stripe_width 0 pg_num_max 32 pg_num_min 1 application mgr read_balance_score 1.00
+pool 6 'mccfs-metadata' replicated size 2 min_size 1 crush_rule 3 object_hash rjenkins pg_num 16 pgp_num 16 autoscale_mode on last_change 471 lfor 0/0/98 flags hashpspool stripe_width 0 compression_mode none pg_autoscale_bias 4 pg_num_min 16 recovery_priority 5 application cephfs read_balance_score 1.00
+pool 7 'mccfs-mccpool' replicated size 2 min_size 1 crush_rule 4 object_hash rjenkins pg_num 128 pgp_num 32 pg_num_target 32 autoscale_mode on last_change 472 lfor 0/0/462 flags hashpspool stripe_width 0 compression_mode none application cephfs read_balance_score 1.00
+
+bash-5.1$ 
