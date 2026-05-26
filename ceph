@@ -1,0 +1,6 @@
+ID   CLASS  WEIGHT   TYPE NAME                STATUS  REWEIGHT  PRI-AFF
+ -1         0.19530  root default                                      
+ -7               0      host sevtdpassydb01                           
+ -3               0      host sevtdpassydb02                           
+-10         0.19530      host sevtdpassymn03                           
+  2    ssd  0.19530          osd.2                up   1.00000  1.00000
